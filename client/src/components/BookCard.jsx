@@ -75,7 +75,7 @@ export default function BookCard({ book, onSwapRequest, onDelete, showActions = 
         flexDirection: 'column',
         animation: 'fadeInUp 0.4s var(--ease-out) both',
       }}
-      onClick={() => navigate(`/book/${book._id}`)}
+      onClick={() => navigate(`/books?highlight=${book._id}`)}
     >
       {/* Cover Image */}
       <div style={{
