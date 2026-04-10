@@ -79,7 +79,8 @@ const addBook = async (req, res) => {
 
     let imageUrl = '';
     if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+      // Cloudinary returns the full public URL in req.file.path
+      imageUrl = req.file.path;
     }
 
     const book = await Book.create({
@@ -132,7 +133,8 @@ const updateBook = async (req, res) => {
     }
 
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      // Cloudinary returns the full public URL in req.file.path
+      req.body.image = req.file.path;
     }
 
     book = await Book.findByIdAndUpdate(req.params.id, req.body, {

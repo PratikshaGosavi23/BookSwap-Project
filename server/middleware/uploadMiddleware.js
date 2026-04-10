@@ -1,30 +1,12 @@
-// middleware/uploadMiddleware.js - File Upload Handler (Multer)
+// middleware/uploadMiddleware.js
+// Now uses Cloudinary instead of local disk storage
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { bookImageStorage, avatarStorage } = require('../config/cloudinary');
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// ─── Storage Configuration ────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    // Unique filename: timestamp + user id + original ext
-    const uniqueName = `${Date.now()}-${req.user?.id || 'anon'}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  },
-});
-
-// ─── File Filter ──────────────────────────────────────────────
+// File filter — same as before
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const extname = allowedTypes.test(file.originalname.toLowerCase());
   const mimetype = allowedTypes.test(file.mimetype);
 
   if (extname && mimetype) {
@@ -34,13 +16,23 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ─── Multer Instance ──────────────────────────────────────────
-const upload = multer({
-  storage,
+// Book image upload — goes to Cloudinary bookswap/books folder
+const uploadBookImage = multer({
+  storage:    bookImageStorage,
   fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max
-  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
+// Avatar upload — goes to Cloudinary bookswap/avatars folder
+const uploadAvatar = multer({
+  storage:    avatarStorage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+
+// Keep default export as book upload for backward compatibility
+// (existing routes use: upload.single('image'))
+const upload = uploadBookImage;
+
 module.exports = upload;
+module.exports.uploadAvatar = uploadAvatar;

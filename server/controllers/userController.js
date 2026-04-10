@@ -35,8 +35,9 @@ const updateProfile = async (req, res) => {
     }
 
     // Handle avatar upload
+    // Handle avatar upload — Cloudinary returns full public URL
     if (req.file) {
-      updateData.avatar = `/uploads/${req.file.filename}`;
+      updateData.avatar = req.file.path;
     }
 
     const user = await User.findByIdAndUpdate(req.user._id, updateData, {

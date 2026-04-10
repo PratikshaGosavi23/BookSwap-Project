@@ -1,8 +1,12 @@
 // src/api/axios.js - Configured Axios Instance
 import axios from 'axios';
 
+// On localhost: Vite proxy forwards '/api' to localhost:5000 — works fine
+// On deployed: VITE_API_URL must be set to your Render backend URL
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + '/api',
+  baseURL: BASE_URL,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -24,7 +28,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('bookswap_token');
       localStorage.removeItem('bookswap_user');
-      // Redirect to login if not already there
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }

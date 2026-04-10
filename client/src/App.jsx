@@ -11,6 +11,7 @@ import BookListings from './pages/BookListings';
 import AddBookPage from './pages/AddBookPage';
 import ProfilePage from './pages/ProfilePage';
 import SwapRequestsPage from './pages/SwapRequestsPage';
+import BookDetails from './pages/BookDetails';
 
 export default function App() {
   return (
@@ -24,19 +25,22 @@ export default function App() {
         <Route path="/books"   element={<BookListings />} />
 
         {/* Protected */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute><Dashboard /></ProtectedRoute>
-        }/>
-        <Route path="/add-book" element={
-          <ProtectedRoute><AddBookPage /></ProtectedRoute>
-        }/>
-        <Route path="/profile" element={
-          <ProtectedRoute><ProfilePage /></ProtectedRoute>
-        }/>
-        <Route path="/profile/:id" element={<ProfilePage />} />
-        <Route path="/swaps" element={
-          <ProtectedRoute><SwapRequestsPage /></ProtectedRoute>
-        }/>
+      <Route path="/dashboard" element={
+        <ProtectedRoute><Dashboard /></ProtectedRoute>
+      }/>
+      <Route path="/add-book" element={
+        <ProtectedRoute><AddBookPage /></ProtectedRoute>
+      }/>
+      <Route path="/profile" element={
+        <ProtectedRoute><ProfilePage /></ProtectedRoute>
+      }/>
+      <Route path="/profile/:id" element={<ProfilePage />} />
+      <Route path="/swaps" element={
+        <ProtectedRoute><SwapRequestsPage /></ProtectedRoute>
+      }/>
+
+      {/* NEW: Book Details */}
+      <Route path="/book/:id" element={<BookDetails />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
